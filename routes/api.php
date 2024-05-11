@@ -25,13 +25,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-
 Route::controller(ApiLoginRegisterController::class)->group(function() {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
 });
-
 
 Route::controller(BookController::class)->group(function() {
     Route::get('/books', 'index');
@@ -39,7 +36,6 @@ Route::controller(BookController::class)->group(function() {
     Route::get('/books/search/{category}', 'searchByCategory');
     Route::get('/books/search2/{subcategory}', 'searchBySubCategory');
 });
-
 
 Route::middleware('auth:sanctum')->group( function () {
     Route::post('/logout', [ApiLoginRegisterController::class, 'logout']);
@@ -61,7 +57,5 @@ Route::middleware(['auth:sanctum' , 'role:member'])->group( function () {
  });
 
  Route::middleware(['auth:sanctum' , 'role:admin'])->group( function ()  {
-    
     Route::resource('/users', UserController::class);
-
 });

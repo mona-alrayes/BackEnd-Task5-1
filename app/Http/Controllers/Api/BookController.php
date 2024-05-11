@@ -96,7 +96,6 @@ class BookController extends Controller
      */
     public function update(Request $request, string $id)
 {
-    // Validate the request data
     $validate = Validator::make($request->all(), [
         'title' => 'nullable',
         'author' => 'nullable',
@@ -112,7 +111,6 @@ class BookController extends Controller
         ], 422);
     }
 
-    // Find the book by ID
     $book = Book::find($id);
 
     if (is_null($book)) {
@@ -122,13 +120,8 @@ class BookController extends Controller
         ], 404);
     }
 
-    // Fill the book model with the request data
     $book->fill($request->all());
-
-    // Save the changes to the database
     $book->save();
-
-    // Prepare the response
     $response = [
         'status' => 'success',
         'message' => 'Product is updated successfully.',

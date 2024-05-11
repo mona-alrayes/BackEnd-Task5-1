@@ -56,20 +56,14 @@ class UserController extends Controller
         }
     
         try {
-            // Hash the password
             $hashedPassword = Hash::make($request->input('password'));
-    
-            // Create the user
             $user = User::create([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'password' => $hashedPassword,
             ]);        
     
-            // Assign the role
             $user->assignRole('member');
-            
-            // Create an API token for the user
             $token = $user->createToken('API Token')->plainTextToken;
             
             $response = [
@@ -83,7 +77,6 @@ class UserController extends Controller
     
             return response()->json($response, 200);
         } catch (\Exception $e) {
-            // Handle any exceptions, such as database errors
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to create user.',
@@ -144,20 +137,14 @@ class UserController extends Controller
                 'message' => 'User is not found!',
             ], 404);
         }
-    
-        // Update user attributes if provided in the request
         $user->name = $request->input('name', $user->name);
         $user->email = $request->input('email', $user->email);
     
-        // Hash the password if provided
         if ($request->has('password')) {
             $user->password = Hash::make($request->input('password'));
         }
     
-        // Save the updated user
         $user->save();
-    
-        // Generate a new API token
         $token = $user->createToken('API Token')->plainTextToken;
     
         $response = [

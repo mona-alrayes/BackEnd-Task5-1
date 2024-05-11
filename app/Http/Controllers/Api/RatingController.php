@@ -16,27 +16,16 @@ class RatingController extends Controller
      */
     public function index()
     {
-        // Get the authenticated user
         $user = Auth::user();
-
-        // Get the user's name
         $userName = $user->name;
-
-        // Get the user's favorites with book details (including titles) using eager loading
         $ratings = ratings::where('user_id', $user->id)->with('book')->get();
-
-        // Extract book titles from favorites
         $books = $ratings->pluck('book.title');
-
-        // Check if favorites are empty
         if ($ratings->isEmpty()) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'No favorites added!',
             ], 404);
         }
-
-        // Build response
         $response = [
             'status' => 'success',
             'message' => 'Ratings are retrieved successfully.',
@@ -69,23 +58,16 @@ class RatingController extends Controller
     public function update(Request $request, string $id)
     {
         $userId = Auth::id();
-
-        // Validate the request data
         $validatedData = $request->validate([
             'rating' => 'required|numeric|min:1|max:5',
         ]);
-
-        // Check if the user has already rated the book
         $rating = ratings::where('user_id', $userId)->where('book_id', $id)->first();
 
         if (!$rating) {
-            // If the user hasn't rated the book, create a new rating
             $rating = new ratings;
             $rating->user_id = $userId;
             $rating->book_id = $id;
         }
-
-        // Update the rating value
         $rating->rating = $validatedData['rating'];
         $rating->save();
 

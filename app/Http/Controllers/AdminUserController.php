@@ -100,10 +100,8 @@ class AdminUserController extends Controller
             $user = User::findOrFail($id);
             $user->delete();
 
-            // Redirect or return a response
             return redirect()->route('users.index')->with('success', 'User deleted successfully.');
         } catch (\Exception $e) {
-            // Handle the exception, e.g., log the error, display an error message
             return back()->with('error', 'An error occurred while deleting the user.');
         }
     }

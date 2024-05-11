@@ -13,27 +13,16 @@ class FavoriteController extends Controller
      */
     public function index()
 {
-    // Get the authenticated user
     $user = Auth::user();
-    
-    // Get the user's name
     $userName = $user->name;
-    
-    // Get the user's favorites with book details (including titles) using eager loading
     $favorites = Favorite::where('user_id', $user->id)->with('book')->get();
-    
-    // Extract book titles from favorites
     $books = $favorites->pluck('book.title');
-
-    // Check if favorites are empty
     if ($favorites->isEmpty()) {
         return response()->json([
             'status' => 'failed',
             'message' => 'No favorites added!',
         ], 404);
     }
-
-    // Build response
     $response = [
         'status' => 'success',
         'message' => 'Favorites are retrieved successfully.',

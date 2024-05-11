@@ -10,7 +10,7 @@
     
 @endsection
 @section('books-table')
-<div class="container">
+<div class="container mr-5 pl-5 pr-5">
     <div class="table-responsive">
         <div class="table-wrapper">
             <div class="table-title">
@@ -35,35 +35,27 @@
                                 <label for="selectAll"></label>
                             </span>
                         </th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Category</th>
-                        <th>SubCategory</th>
+                        <th>category</th>
+                        <th>subcategory</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($books as $book)
+                    @foreach ($categories as $category)
                         <tr>
                             <td>
                                 <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox{{$book->id}}" name="options[]"
-                                        value="{{$book->id}}">
-                                    <label for="checkbox{{ $loop->iteration }}"></label>
-                                </span>
+                                    <input type="checkbox" id="checkbox{{$category->id}}" name="options[]" value="{{$category->id}}">
+                                    <label for="checkbox{{$category->id}}"></label>
+                                </span>                                
                             </td>
                             <td>
-                                <span class="user-id" data-user-id="{{ $book->id }}" data-toggle="tooltip"
-                                    title="User ID: {{ $book->id }}">
-                                    {{ $book->title }}
+                                <span class="user-id" data-user-id="{{ $category->id }}" data-toggle="tooltip"
+                                    title="User ID: {{ $category->id }}">
+                                    {{optional($category->category)->category}}
                                 </span>
                             </td>
-                            <td>{{ $book->author }}</td>
-                            <td>{{ $book->description }}</td>
-                            <td>${{ $book->price }}</td>
-                            <td>{{optional($book->category)->category}}</td>
-                            <td>{{optional($book->subcategory)->subcategory}}</td>
+                            <td>{{ $category->subcategory}}</td>
+                            
                         </tr>
                     @endforeach
 
@@ -84,52 +76,24 @@
             @if (session('status'))
                 <div class="alert alert-success">{{ session('status') }}</div>
             @endif
-            <form method="POST" action="{{ route('books.store') }}">
+            <form method="POST" action="{{ route('Category.store') }}">
                 @csrf
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Book</h4>
+                    <h4 class="modal-title">Add Subcategory and Category</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" class="form-control" required value="{{ old('title') }}" name="title">
-                        @error('title')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label>Author</label>
-                        <input type="text" class="form-control" required value="{{ old('author') }}" name="author">
-                        @error('author')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label>description</label>
-                        <input type="text" class="form-control" name="description" required>
-                        @error('description')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label>Price</label>
-                        <input type="text" class="form-control" name="price" required>
-                        @error('price')
+                        <label>Subcategory</label>
+                        <input type="text" class="form-control" required value="{{ old('subcategory') }}" name="subcategory">
+                        @error('subcategory')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <input type="text" class="form-control" name="category" required>
+                        <input type="text" class="form-control" required value="{{ old('category') }}" name="category">
                         @error('category')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label>subcategory</label>
-                        <input type="text" class="form-control" name="subcategory" required>
-                        @error('subcategory')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -144,26 +108,26 @@
 </div>
 
 <div id="deleteEmployeeModal" class="modal fade">
-<div class="modal-dialog">
-    <div class="modal-content">
-        <form id="deleteForm" method="POST" action="{{ route('books.update', ['book' => ':bookId']) }}">
-            @csrf
-            @method('DELETE')
-            <div class="modal-header">
-                <h4 class="modal-title">Delete Book</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this record?</p>
-                <p class="text-warning"><small>This action cannot be undone.</small></p>
-            </div>
-            <div class="modal-footer">
-                <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </div>
-        </form>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteForm" method="POST" action="{{ route('Category.destroy', ['Category' => ':CategoryId']) }}">
+                @csrf
+                @method('DELETE')
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Subcategory</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this record?</p>
+                    <p class="text-warning"><small>This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 </div>
 
 <script>
@@ -174,17 +138,19 @@
             event.preventDefault();
 
             // Get the ID of the checked checkbox
-            var bookId = $('input[name="options[]"]:checked').val();
+            var categoryId = $('input[name="options[]"]:checked').val();
 
-            // Set the form action dynamically to include the user ID
-            $(this).attr('action', '{{ route('books.destroy', ':bookId') }}'.replace(':bookId',
-                bookId));
+            // Set the form action dynamically to include the category ID
+            var actionUrl = '{{ route("Category.destroy", ":CategoryId") }}';
+            actionUrl = actionUrl.replace(':CategoryId', categoryId);
+            $(this).attr('action', actionUrl);
 
             // Submit the form
-            $(this).unbind('submit').submit();
+            $(this).submit();
         });
     });
 </script>
+
 <script>
     $(document).ready(function() {
         // Activate tooltip

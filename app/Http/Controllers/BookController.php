@@ -80,9 +80,8 @@ class BookController extends Controller
         try {
             $book = Book::findOrFail($id);
             $book->delete();
-
-            // Redirect or return a response
             return redirect()->back()->with('success', 'Book deleted successfully.');
+            
         } catch (\Exception $e) {
             return back()->with('error', 'An error occurred while deleting the Book.');
         }

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\category;
+use App\Models\subcategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AdminCategoryController extends Controller
 {
@@ -12,8 +14,8 @@ class AdminCategoryController extends Controller
      */
     public function index()
     {
-        $categories = category::latest()->simplePaginate(100);
-        return view('admin.category.index', compact('cateories'));
+        $categories = subcategory::latest()->simplePaginate(100);
+        return view('admin.books.category', compact('categories'));
     }
 
     /**
@@ -29,7 +31,22 @@ class AdminCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'category' => 'required|string',
+            'subcategory' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $category = Category::firstOrCreate(['category' => $request->category]);
+        $subcategory = new Subcategory();
+        $subcategory->category_id = $category->id;
+        $subcategory->subcategory = $request->subcategory;
+        $subcategory->save();
+
+        return redirect()->back()->with('success', 'Book added successfully.');
     }
 
     /**
@@ -61,6 +78,14 @@ class AdminCategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $subcategory = subcategory::findOrFail($id);
+            $subcategory->delete();
+            return redirect()->back()->with('success', 'record deleted successfully.');
+            
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred while deleting the Book.');
+        }
     }
+
 }
